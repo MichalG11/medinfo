@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Informacje o lekarzu</title>
+</head>
+<body>
+
+<div style="text-align:center; ">
+
+    <h2>Centrum informacji o lekarzach - Informacje o lekarzu!</h2>
+    <h5 th:text="${userObject.isLogin() ? 'Jesteś zalogowany!' :
+            'Jesteś niezalogowany! Aby dodawać komentarze, musisz się zalogować!'}"></h5>
+    <h5 th:if="${userObject.isLogin()}" th:text="'Twój username to: ' +
+            ${userObject.getUserEntity().getUsername()}"></h5>
+
+    <h4 class="alert alert-success"  th:text="${doctorData.getCity()}+' - '+${doctorData.getSpecialization()}+' - '+
+                                ${doctorData.getName()}+' '+${doctorData.getSurname()}+' - tel: '+
+                                ${doctorData.getPhoneNumber()}+' - liczba opinii: '+
+                                ${doctorData.getQuantityOfComments()}
+                                +' - średnia ocena: '+${doctorData.getAverageRating()}"></h4>
+
+    <div class="alert-heading" th:each="comment : ${doctorData.getComments()}">
+            <h6 class="alert-heading"  th:text="${comment.getUser().getUsername()}+
+                    ' - '+${comment.getCommentDate()}+' - ocena: '+${comment.getRating()}"></h6>
+            <h5 class="alert-heading" th:text="${comment.getContext()}"></h5><br/>
+    </div><br/>
+
+
+    <a href="/index"><input type="submit" value="Strona główna!" class="btn btn-default"></a><br/><br/>
+
+
+    <div th:if="${infoAboutErrors != null}" class="alert alert-danger">
+        <strong th:text="${infoAboutErrors}">Error</strong>
+    </div>
+
+    <form th:action="'/comment/' + ${doctorData.getId()}" method="post" th:object="${commentForm}">
+        <br/>
+        <span th:if="${#fields.hasErrors('context')}" th:errors="*{context}">Error</span>
+        <input type="text" class="form-control" th:field="*{context}" placeholder="Opinia"/><br/>
+
+        <span th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}">Error</span><br/>
+        Ocena w skali 1 do 5:
+        <input type="text" style="width:25px; margin-left:auto; margin-right:auto;" th:field="*{rating}"/><br/><br/>
+
+        <input type="submit" value="Dodaj opinię!" class="btn btn-primary"/>
+    </form><br/>
+
+    <div th:if="${doctorData.getComments().size() > 0}" >
+        <form th:action="'/deleteComment/' + ${doctorData.getId()}" method="get" >
+            <input type="submit" value="Usuń opinię!" class="btn btn-primary"/>
+        </form>
+    </div>
+
+
+    <div th:if="${userObject.isLogin() && userObject.getUserEntity().getId() == 1}" >
+
+        <form th:action="'/delete/' + ${doctorData.getId()}" method="get" >
+            <br/>
+            <input type="submit" value="Admin: Usuń lekarza!" class="btn btn-primary"/>
+        </form>
+
+
+        <form th:action="'/change/' + ${doctorData.getId()}" method="get" >
+            <br/>
+            <input type="submit" value="Admin: Zmień dane lekarza!" class="btn btn-primary"/>
+        </form><br/>
+
+    </div>
+
+</div>
+
+</body>
+</html>

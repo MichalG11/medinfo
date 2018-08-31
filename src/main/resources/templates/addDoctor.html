@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Dodawanie lekarza</title>
+</head>
+<body>
+
+<div style="text-align:center; ">
+    <h2>Centrum informacji o lekarzach - Dodawanie nowego lekarza!</h2>
+    <h5 th:text="${userObject.isLogin() ? 'Jesteś zalogowany!' :
+            'Jesteś niezalogowany! Aby dodawać komentarze, musisz się zalogować!'}"></h5>
+    <h5 th:if="${userObject.isLogin()}" th:text="'Twój username to: ' +
+            ${userObject.getUserEntity().getUsername()}"></h5>
+
+    <br/>
+
+    <div th:if="${infoAboutAddDoctor != null}" class="alert alert-danger">
+        <strong th:text="${infoAboutAddDoctor}"></strong>
+    </div>
+
+    <div th:if="${infoAboutEmptyForm != null}" class="alert alert-danger">
+        <strong th:text="${infoAboutEmptyForm}"></strong>
+    </div>
+
+    <div th:if="${infoAboutErrors != null}" class="alert alert-danger">
+        <strong th:text="${infoAboutErrors}">Error</strong>
+    </div>
+
+    <form action="/addDoctor" method="post" th:object="${doctorForm}">
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</span>
+        <input type="text" th:field="*{name}" class="form-control" placeholder="Imię"/> <br/>
+
+        <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Error</span>
+        <input type="text" th:field="*{surname}" class="form-control" placeholder="Nazwisko"/> <br/>
+
+        <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}">Error</span>
+        <input type="text" th:field="*{city}" class="form-control" placeholder="Miasto"/> <br/>
+
+        <span th:if="${#fields.hasErrors('specialization')}" th:errors="*{specialization}">Error</span>
+        <input type="text" th:field="*{specialization}" class="form-control" placeholder="Specjalizacja"/> <br/>
+
+        <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Error</span>
+        <input type="text" th:field="*{phoneNumber}" class="form-control" placeholder="Numer w formacje: xxx-xxx-xxx"/>
+        <br/>
+
+        <input type="submit" value="Admin: Dodaj lekarza!" class="btn btn-default">
+    </form>
+
+    <br/>
+    <a href="/index"><input type="submit" value="Strona główna!" class="btn btn-default"></a>   <br/>
+
+
+</div>
+
+
+</body>
+</html>

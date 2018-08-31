@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Rejestracja</title>
+</head>
+<body>
+
+<div style="text-align:center; ">
+    <h2>Centrum informacji o lekarzach - Rejestracja użytkownika!</h2>
+    <h5 th:text="${userObject.isLogin() ? 'Jesteś zalogowany!' :
+            'Jesteś niezalogowany! Aby dodawać komentarze, musisz się zalogować!'}"></h5>
+    <h5 th:if="${userObject.isLogin()}" th:text="'Twój username to: ' +
+            ${userObject.getUserEntity().getUsername()}"></h5>
+
+    <br/>
+
+    <div th:if="${infoAboutErrors != null}" class="alert alert-danger">
+        <strong th:text="${infoAboutErrors}">Error</strong>
+    </div><br/><br/><br/>
+
+    <form action="/register" method="post" th:object="${userForm}">
+        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</span>
+        <input type="text" th:field="*{username}" class="form-control" placeholder="Nick"/><br/>
+
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error</span>
+        <input type="password" th:field="*{password}" class="form-control" placeholder="Hasło"/><br/>
+
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error</span>
+        <input type="email" th:field="*{email}" class="form-control" placeholder="Email"/><br/>
+
+        <span th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Error</span>
+        <input type="text" th:field="*{age}" class="form-control" placeholder="Wiek"/><br/>
+
+        <input type="submit" value="Zarejestruj się!" class="btn btn-default">
+    </form>
+
+    <br/>
+    <a href="/index"><input type="submit" value="Strona główna!" class="btn btn-default"></a><br/>
+
+</div>
+
+</body>
+</html>

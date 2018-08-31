@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+
+
+    <title>Strona główna</title>
+</head>
+<body>
+
+    <div style="text-align:center; ">
+        <h2>Witaj w centrum informacji o lekarzach!</h2>
+        <h5 th:text="${userObject.isLogin() ? 'Jesteś zalogowany!' :
+            'Jesteś niezalogowany! Aby dodawać komentarze, musisz się zalogować!'}"></h5>
+        <h5 th:if="${userObject.isLogin()}" th:text="'Twój username to: ' +
+            ${userObject.getUserEntity().getUsername()}"></h5><br/>
+
+
+        <h5>Znajdź specialistę w swoim mieście!</h5><br/>
+
+
+        <div th:if="${infoAboutErrors != null}" class="alert alert-danger">
+            <strong th:text="${infoAboutErrors}">Error</strong>
+        </div>
+
+        <form action="/find" method="post" th:object="${doctorForm}">
+            <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}">Error</span>
+            <input type="text" class="form-control" placeholder="Miasto" th:field="*{city}"/> <br/>
+
+            <span th:if="${#fields.hasErrors('specialization')}" th:errors="*{specialization}">Error</span>
+            <input type="text" class="form-control" placeholder="Specializacja" th:field="*{specialization}"/><br/>
+
+            <input type="submit" value="Szukaj" class="btn btn-default">
+        </form><br/><br/>
+
+
+        <h5>Znajdź specialistę podając imię i nazwisko!</h5><br/>
+
+
+        <div th:if="${infoAboutErrors2 != null}" class="alert alert-danger">
+            <strong th:text="${infoAboutErrors2}">Error</strong>
+        </div>
+
+        <form action="/find2" method="post" th:object="${doctorForm}">
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</span>
+            <input type="text" class="form-control" placeholder="Imię" th:field="*{name}"/><br/>
+
+            <span th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Error</span>
+            <input type="text" class="form-control" placeholder="Nazwisko" th:field="*{surname}"/><br/>
+
+            <input type="submit" value="Szukaj" class="btn btn-default">
+        </form><br/>
+
+
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Wyświetl wszystkich lekarzy!
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/allDoctorsByRating">Sortowanie: ocena</a>
+                <a class="dropdown-item" href="/allDoctorsByCity">Sortowanie: miasto</a>
+                <a class="dropdown-item" href="/allDoctorsBySpecialization">Sortowanie: specjalizacja</a>
+                <a class="dropdown-item" href="/allDoctorsBySurname">Sortowanie: nazwisko</a>
+                <a class="dropdown-item" href="/allDoctorsByComments">Sortowanie: ilość opinii</a>
+            </div>
+        </div>
+
+        <br/>
+
+        <div th:if="${!userObject.isLogin()}" >
+            <a href="/login"><input type="submit" value="Zaloguj się!" class="btn btn-default"></a>
+        </div>      <br/>
+
+        <div th:if="${userObject.isLogin()}" >
+            <a href="/logout"><input type="submit" value="Wyloguj!" class="btn btn-default"></a><br/>
+        </div>
+
+        <div th:if="${!userObject.isLogin()}" >
+            <a href="/register"><input type="submit" value="Zarejestruj się!" class="btn btn-default"></a>
+        </div>      <br/>
+
+        <div th:if="${userObject.isLogin() && userObject.getUserEntity().getId() == 1}" >
+            <a href="/addDoctor"><input type="submit" value="Admin: Dodaj lekarza!" class="btn btn-default"></a>
+        </div>      <br/>
+
+    </div>
+
+
+</body>
+</html>
