@@ -21,7 +21,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
     public boolean tryToLogin(String username, String password) {
         Optional<UserEntity> userEntity = userRepository.findByUsernameAndPassword(username, password);
         if(userEntity.isPresent()) {
@@ -35,7 +34,6 @@ public class UserService {
         if(userRepository.existsByUsername(userForm.getUsername())) {
             return false;
         }
-
         UserEntity userEntity = createEntityFromForm(userForm);
         userRepository.save(userEntity);
         return true;
@@ -50,6 +48,5 @@ public class UserService {
         userEntity.setAge(userForm.getAge());
         return userEntity;
     }
-
 
 }

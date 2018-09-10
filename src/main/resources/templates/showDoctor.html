@@ -28,9 +28,7 @@
             <h5 class="alert-heading" th:text="${comment.getContext()}"></h5><br/>
     </div><br/>
 
-
     <a href="/index"><input type="submit" value="Strona główna!" class="btn btn-default"></a><br/><br/>
-
 
     <div th:if="${infoAboutErrors != null}" class="alert alert-danger">
         <strong th:text="${infoAboutErrors}">Error</strong>
@@ -54,14 +52,12 @@
         </form>
     </div>
 
-
     <div th:if="${userObject.isLogin() && userObject.getUserEntity().getId() == 1}" >
 
         <form th:action="'/delete/' + ${doctorData.getId()}" method="get" >
             <br/>
             <input type="submit" value="Admin: Usuń lekarza!" class="btn btn-primary"/>
         </form>
-
 
         <form th:action="'/change/' + ${doctorData.getId()}" method="get" >
             <br/>

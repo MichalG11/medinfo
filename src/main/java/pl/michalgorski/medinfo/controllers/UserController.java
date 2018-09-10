@@ -44,7 +44,7 @@ public class UserController {
             model.addAttribute("infoAboutLogin", "Nie ma takiego użytkownika!");
             return "login";
         }
-        return "redirect:/index";
+        return "redirect:/";
     }
 
     @GetMapping("/register")
@@ -66,15 +66,14 @@ public class UserController {
             model.addAttribute("infoAboutRegister", "Nazwa użytkownika jest już zajęta!");
             return "register";
         }
-        return "redirect:/login";
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
     public String logout() {
         sessionService.setUserEntity(null);
         sessionService.setLogin(false);
-        return "redirect:/login";
+        return "redirect:/";
     }
-
 
 }

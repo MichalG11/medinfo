@@ -16,7 +16,6 @@
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
 
-
     <title>Strona główna</title>
 </head>
 <body>
@@ -28,15 +27,13 @@
         <h5 th:if="${userObject.isLogin()}" th:text="'Twój username to: ' +
             ${userObject.getUserEntity().getUsername()}"></h5><br/>
 
-
         <h5>Znajdź specialistę w swoim mieście!</h5><br/>
-
 
         <div th:if="${infoAboutErrors != null}" class="alert alert-danger">
             <strong th:text="${infoAboutErrors}">Error</strong>
         </div>
 
-        <form action="/find" method="post" th:object="${doctorForm}">
+        <form action="/findByCityAndSpecialization" method="post" th:object="${doctorForm}">
             <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}">Error</span>
             <input type="text" class="form-control" placeholder="Miasto" th:field="*{city}"/> <br/>
 
@@ -46,15 +43,13 @@
             <input type="submit" value="Szukaj" class="btn btn-default">
         </form><br/><br/>
 
-
         <h5>Znajdź specialistę podając imię i nazwisko!</h5><br/>
-
 
         <div th:if="${infoAboutErrors2 != null}" class="alert alert-danger">
             <strong th:text="${infoAboutErrors2}">Error</strong>
         </div>
 
-        <form action="/find2" method="post" th:object="${doctorForm}">
+        <form action="/findByNameAndSurname" method="post" th:object="${doctorForm}">
             <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</span>
             <input type="text" class="form-control" placeholder="Imię" th:field="*{name}"/><br/>
 
@@ -63,8 +58,6 @@
 
             <input type="submit" value="Szukaj" class="btn btn-default">
         </form><br/>
-
-
 
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -99,7 +92,6 @@
         </div>      <br/>
 
     </div>
-
 
 </body>
 </html>

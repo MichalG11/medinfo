@@ -31,5 +31,4 @@ public class DoctorEntity {
     @OneToMany(mappedBy = "doctor", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<CommentEntity> comments;
 
-
 }

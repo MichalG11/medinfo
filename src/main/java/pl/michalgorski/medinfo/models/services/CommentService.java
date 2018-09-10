@@ -24,7 +24,6 @@ public class CommentService {
         this.doctorService = doctorService;
     }
 
-
     public void addComment(CommentForm commentForm, int doctorId) {
         CommentEntity commentEntity = createCommentEntity(commentForm, doctorId);
         commentRepository.save(commentEntity);
@@ -52,7 +51,6 @@ public class CommentService {
     public Optional<CommentEntity> getCommentById(int commentId) {
         return commentRepository.findById(commentId);
     }
-
 
 
 }

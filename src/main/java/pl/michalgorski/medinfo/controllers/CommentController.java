@@ -1,6 +1,7 @@
 package pl.michalgorski.medinfo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,9 @@ import java.util.stream.Collectors;
 
 @Controller
 public class CommentController {
+
+    @Value("${admin.id}")
+    int adminId;
 
     final SessionService sessionService;
     final CommentService commentService;
@@ -63,8 +67,8 @@ public class CommentController {
     @GetMapping("/deleteCommentById/{doctorId}/{commentId}")
     public String deleteCommentById(@PathVariable("doctorId") int doctorId,
                                     @PathVariable("commentId") int commentId, Model model) {
-        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == 1)) {
-            return "redirect:/index";
+        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == adminId)) {
+            return "redirect:/";
         }
         model.addAttribute("userObject", sessionService);
         model.addAttribute("doctorData", doctorService.getAllDataAboutDoctor(doctorId));
@@ -86,6 +90,5 @@ public class CommentController {
         model.addAttribute("infoAboutCommentDelete", "Nie możesz usuwać opinii innych użytkowników!");
         return "deleteComment";
     }
-
 
 }

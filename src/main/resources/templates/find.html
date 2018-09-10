@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<!--<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">-->
+<html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
 <head>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -15,7 +16,46 @@
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <script>
+
+        function sendData() {
+            var doctorDescription = document.getElementById('doctors').value;
+
+            window.location.href = "/" + doctorDescription ;
+        }
+
+        function onInputEdited() {
+            var doct = document.getElementById('doctors').value;
+            callToServer(doct);
+        }
+
+        function callToServer(typedLetters) {
+            console.log(typedLetters);
+            $.ajax({
+                url: "/doctors/findDoctorByLetters/" + typedLetters,
+                type: "get",
+                success: function(response) {
+                        var list = document.getElementById('hints');
+                        list.innerHTML = "";
+
+                        response.forEach(function (oneElement) {
+                            var option = document.createElement('option');
+                            option.value = oneElement;
+                            list.appendChild(option);
+                        })
+                },
+                error: function(xhr) {
+                }
+            });
+        }
+
+    </script>
+
     <title>Lista lekarzy</title>
+
 </head>
 <body>
     <div style="text-align:center; ">
@@ -29,6 +69,22 @@
         <div th:if="${infoAboutSearch != null}" class="alert-heading">
             <h6 th:text="${infoAboutSearch}"></h6>
         </div>
+
+        <br/>
+
+        <div style="text-align: center;  ">
+
+            <input class="form-control" oninput="onInputEdited()"  id="doctors" list="hints"
+                   placeholder="Wyszukaj wpisując litery">
+
+            <datalist id="hints">
+            </datalist>
+
+            <button onclick="sendData()" class="btn btn-default">Pokaż szczegóły!</button>
+
+        </div>
+
+        <br/>
 
         <div class="alert alert-success" th:each="doctor : ${doctors}">
             <a th:href="'/doctor/' + ${doctor.getId()}" >

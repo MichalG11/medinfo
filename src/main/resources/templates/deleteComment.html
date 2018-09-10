@@ -26,7 +26,6 @@
         <strong th:text="${infoAboutCommentDelete}"></strong>
     </div>
 
-
     <div th:if="${userObject.isLogin() && userObject.getUserEntity().getId() != 1}" >
 
         <div class="alert-heading" th:each="comment : ${doctorData.getComments()}">
@@ -38,7 +37,6 @@
         </div><br/>
 
     </div><br/>
-
 
     <div th:if="${userObject.isLogin() && userObject.getUserEntity().getId() == 1}" >
 

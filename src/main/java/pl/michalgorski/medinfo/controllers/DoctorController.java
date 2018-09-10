@@ -1,19 +1,31 @@
 package pl.michalgorski.medinfo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.michalgorski.medinfo.models.DoctorEntity;
 import pl.michalgorski.medinfo.models.forms.CommentForm;
 import pl.michalgorski.medinfo.models.forms.DoctorForm;
 import pl.michalgorski.medinfo.models.services.DoctorService;
 import pl.michalgorski.medinfo.models.services.SessionService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 public class DoctorController {
+
+    @Value("${admin.id}")
+    int adminId;
 
     final SessionService sessionService;
     final DoctorService doctorService;
@@ -24,10 +36,9 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-
-    @PostMapping("/find")
-    public String find(@ModelAttribute("doctorForm") @Valid DoctorForm doctorForm, BindingResult bindingResult,
-                       Model model) {
+    @PostMapping("/findByCityAndSpecialization")
+    public String findByCityAndSpecialization(@ModelAttribute("doctorForm") @Valid DoctorForm doctorForm,
+                                              BindingResult bindingResult, Model model) {
         model.addAttribute("userObject", sessionService);
         if(bindingResult.hasErrors()) {
             model.addAttribute("infoAboutErrors", "Niepoprawne dane!");
@@ -44,9 +55,9 @@ public class DoctorController {
         return "find";
     }
 
-    @PostMapping("/find2")
-    public String find2(@ModelAttribute("doctorForm") @Valid DoctorForm doctorForm, BindingResult bindingResult,
-                        Model model) {
+    @PostMapping("/findByNameAndSurname")
+    public String findByNameAndSurname(@ModelAttribute("doctorForm") @Valid DoctorForm doctorForm,
+                                       BindingResult bindingResult, Model model) {
         model.addAttribute("userObject", sessionService);
         if(bindingResult.hasErrors()) {
             model.addAttribute("infoAboutErrors2", "Niepoprawne dane!");
@@ -74,17 +85,17 @@ public class DoctorController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") int doctorId) {
-        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == 1)) {
-            return "redirect:/index";
+        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == adminId)) {
+            return "redirect:/";
         }
         doctorService.deleteDoctor(doctorId);
-        return "redirect:/index";
+        return "redirect:/";
     }
 
     @GetMapping("/addDoctor")
     public String addDoctor(Model model) {
-        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == 1)) {
-            return "redirect:/index";
+        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == adminId)) {
+            return "redirect:/";
         }
         model.addAttribute("userObject", sessionService);
         model.addAttribute("doctorForm", new DoctorForm());
@@ -95,8 +106,8 @@ public class DoctorController {
     public String addDoctor(@ModelAttribute("doctorForm") @Valid DoctorForm doctorForm, BindingResult bindingResult,
                             Model model) {
         model.addAttribute("userObject", sessionService);
-        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == 1)) {
-            return "redirect:/index";
+        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == adminId)) {
+            return "redirect:/";
         }
         if(bindingResult.hasErrors()) {
             model.addAttribute("infoAboutErrors", "Niepoprawne dane!");
@@ -110,13 +121,13 @@ public class DoctorController {
             model.addAttribute("infoAboutAddDoctor", "Taki lekarz już istnieje w bazie!");
             return "addDoctor";
         }
-        return "redirect:/index";
+        return "redirect:/";
     }
 
     @GetMapping("/change/{id}")
     public String change(@PathVariable("id") int doctorId, Model model) {
-        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == 1)) {
-            return "redirect:/index";
+        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == adminId)) {
+            return "redirect:/";
         }
         model.addAttribute("userObject", sessionService);
         model.addAttribute("doctorData", doctorService.getAllDataAboutDoctor(doctorId));
@@ -129,8 +140,8 @@ public class DoctorController {
                          @ModelAttribute("doctorForm") @Valid DoctorForm doctorForm, BindingResult bindingResult) {
         model.addAttribute("userObject", sessionService);
         model.addAttribute("doctorData", doctorService.getAllDataAboutDoctor(doctorId));
-        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == 1)) {
-            return "redirect:/index";
+        if(!(sessionService.isLogin() && sessionService.getUserEntity().getId() == adminId)) {
+            return "redirect:/";
         }
         if(bindingResult.hasErrors()) {
             model.addAttribute("infoAboutErrors", "Niepoprawne dane!");
@@ -184,7 +195,26 @@ public class DoctorController {
         return "find";
     }
 
+    @GetMapping("/{description}")
+    public String showDoctorByLetters(@PathVariable("description") String description, Model model) {
+        model.addAttribute("userObject", sessionService);
+        List<String> words = Arrays.asList(description.split(" "));
+        if(words.size() != 4) {
+            return "redirect:/";
+        }
 
+        Optional<DoctorEntity> doctorEntity = doctorService.findDoctorByLetters(words.get(0), words.get(1), words.get(2),
+                words.get(3));
+        if(!doctorEntity.isPresent()) {
+            return "redirect:/";
+        }
 
+        int doctorId = doctorEntity.get().getId();
+
+        doctorService.saveAverageRatingForDoctorId(doctorId);
+        model.addAttribute("doctorData", doctorService.getAllDataAboutDoctor(doctorId));
+        model.addAttribute("commentForm", new CommentForm());
+        return "showDoctor";
+    }
 
 }

@@ -17,8 +17,7 @@ public class MainController {
         this.sessionService = sessionService;
     }
 
-
-    @GetMapping("/index")
+    @GetMapping("/")
     public String index(Model model){
         model.addAttribute("doctorForm", new DoctorForm());
         model.addAttribute("userObject", sessionService);

@@ -28,9 +28,7 @@
         <h5 class="alert-heading" th:text="${comment.getContext()}"></h5>   <br/>
     </div>      <br/>
 
-
     <a href="/index"><input type="submit" value="Strona główna!" class="btn btn-default"></a>   <br/><br/>
-
 
     <div th:if="${userObject.isLogin() && userObject.getUserEntity().getId() == 1}" >
 
@@ -50,7 +48,7 @@
             <input type="text" th:field="*{surname}" class="form-control" placeholder="Nazwisko"/> <br/>
 
             <span th:if="${#fields.hasErrors('city')}" th:errors="*{city}">Error</span>
-            <input type="text" th:field="*{city}" class="form-control" placeholder="Miasto"/> <br/>
+            <input type="text" th:field="*{city}" class="form-control"  placeholder="Miasto" /> <br/>
 
             <span th:if="${#fields.hasErrors('specialization')}" th:errors="*{specialization}">Error</span>
             <input type="text" th:field="*{specialization}" class="form-control" placeholder="Specjalizacja"/> <br/>

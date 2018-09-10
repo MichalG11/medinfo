@@ -1,6 +1,7 @@
 package pl.michalgorski.medinfo.models.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import pl.michalgorski.medinfo.models.CommentEntity;
 import pl.michalgorski.medinfo.models.DoctorEntity;
@@ -8,7 +9,9 @@ import pl.michalgorski.medinfo.models.forms.DoctorForm;
 import pl.michalgorski.medinfo.models.repositories.DoctorRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +25,6 @@ public class DoctorService {
         this.sessionService = sessionService;
         this.doctorRepository = doctorRepository;
     }
-
 
     public List<DoctorEntity> findDoctorByCityAndSpecialization(String city, String specialization) {
         return doctorRepository.findByCity(city).stream()
@@ -177,6 +179,26 @@ public class DoctorService {
         return doctorRepository.findAll().stream()
                 .sorted((s, s1) -> s.getSurname().compareTo(s1.getSurname()))
                 .collect(Collectors.toList());
+    }
+
+    @Bean
+    public List<String> getActualDoctors() {
+        return doctorRepository.findAll().stream()
+                .map(s -> s.getCity() +" "+ s.getSpecialization() +" "+ s.getName() +" "+ s.getSurname())
+                .collect(Collectors.toList());
+    }
+
+    public Optional<DoctorEntity> findDoctorByLetters(String city, String specialization, String name, String surname) {
+        List<DoctorEntity> listDoctorsByLetters = doctorRepository.findByCity(city).stream()
+                .filter(s -> s.getSpecialization().equals(specialization))
+                .filter(s -> s.getName().equals(name))
+                .filter(s -> s.getSurname().equals(surname))
+                .collect(Collectors.toList());
+
+        if(listDoctorsByLetters.size() == 0 || listDoctorsByLetters.size() > 1) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(listDoctorsByLetters.get(0));
     }
 
 
